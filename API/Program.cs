@@ -55,7 +55,7 @@ app.MapGet("/api/tarefas/{id}", ([FromRoute] int id, [FromServices] AppDataConte
 });
 
 
-//4-ATUALIZAR TAREFA PUT
+//4-PUT TAREFA
 app.MapPut("/api/tarefas/{id}", ([FromRoute] int id,
                                 [FromBody] Tarefa tarefa,
                                 [FromServices] AppDataContext ctx) =>
@@ -67,6 +67,21 @@ app.MapPut("/api/tarefas/{id}", ([FromRoute] int id,
         return Results.BadRequest("Tarefa inexistente");
     }
 
+    var status = ctx.Status.Find(tarefa.StatusId);
+    if(status == null)
+    {
+        return Results.BadRequest("status nulo");
+    }
+
+    tarefa.Status = status;
+
+    if(tarefa == null || (tarefa.Titulo.Length < 3))
+    {
+        return Results.BadRequest("Os requisitos para criar a tarefa não foram atendidos.");
+    }
+
+
+
     entidade.Titulo =  tarefa.Titulo;
     entidade.StatusId = tarefa.StatusId;
     entidade.DataVencimento = tarefa.DataVencimento;
@@ -76,7 +91,20 @@ app.MapPut("/api/tarefas/{id}", ([FromRoute] int id,
     return Results.Ok(ctx.Tarefas.Include(t => t.Status).FirstOrDefault(t => t.Id == id));
 });
 
-//5-
+//5-DELETE TAREFA
+app.MapDelete("/api/tarefas/{id}", ([FromRoute] int id, [FromServices] AppDataContext ctx) =>
+{
+
+    Tarefa? tarefa = ctx.Tarefas.Find(id);
+    if(tarefa == null)
+    {
+        return Results.NotFound();
+    }
+
+    ctx.Tarefas.Remove(tarefa);
+    ctx.SaveChanges();
+    return Results.NoContent();
+});
 
 
 app.Run();

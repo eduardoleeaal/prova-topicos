@@ -24,3 +24,7 @@ Content-Type: application/json
     "Titulo":"Aadaaaaaads",
     "DataVencimento":"5552-05-05"
 }
+
+
+###Delete por Id
+DELETE http://localhost:5231/api/tarefas/2
