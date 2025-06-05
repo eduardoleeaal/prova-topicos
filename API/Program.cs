@@ -12,6 +12,14 @@ var app = builder.Build();
 //1-POST
 app.MapPost("/api/tarefas/", ([FromBody] Tarefa tarefa, [FromServices] AppDataContext ctx) => 
 {
+    var status = ctx.Status.Find(tarefa.StatusId);
+    if(status == null)
+    {
+        return Results.BadRequest("status nulo");
+    }
+
+    tarefa.Status = status;
+
     if(tarefa == null || (tarefa.Titulo.Length < 3))
     {
         return Results.BadRequest("Os requisitos para criar a tarefa não foram atendidos.");
@@ -24,7 +32,7 @@ app.MapPost("/api/tarefas/", ([FromBody] Tarefa tarefa, [FromServices] AppDataCo
 
 //2-LISTAR TODOS
 app.MapGet("/api/tarefas", ([FromServices] AppDataContext ctx) => {
-    var tarefas = ctx.Tarefas.Include(t => t.Titulo).ToList();
+    var tarefas = ctx.Tarefas.Include(t => t.Status).ToList();
     if(tarefas.Any())
     {
         return Results.Ok(tarefas);
@@ -34,5 +42,21 @@ app.MapGet("/api/tarefas", ([FromServices] AppDataContext ctx) => {
 });
 
 //3-GET POR ID
+app.MapGet("/api/tarefas/{id}", ([FromRoute] int id, [FromServices] AppDataContext ctx) =>
+{
+    Tarefa? tarefa = ctx.Tarefas.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
+
+    if(tarefa != null)
+    {
+        return Results.Ok(tarefa);
+    }
+
+    return Results.NotFound();
+});
+
+
+//4-ATUALIZAR TAREFA PUT
+
+
 
 app.Run();

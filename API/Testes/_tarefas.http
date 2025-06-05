@@ -6,5 +6,11 @@ POST http://localhost:5231/api/tarefas
 Content-Type: application/json
 
 {
-
+    "Id":"2", 
+    "StatusId":"1",
+    "Titulo":"Ads",
+    "DataVencimento":"2222-05-05"
 }
+
+###Buscando por Id
+GET http://localhost:5231/api/tarefas/1
