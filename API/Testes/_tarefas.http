@@ -1,8 +1,8 @@
 ### Lista de Tarefas
-GET http://localhost:5231
+GET http://localhost:5231/api/tarefas
 
 ### Cadastrar Tarefa
-POST http://localhost:5231
+POST http://localhost:5231/api/tarefas
 Content-Type: application/json
 
 {
