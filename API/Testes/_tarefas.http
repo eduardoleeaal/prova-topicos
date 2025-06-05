@@ -14,3 +14,13 @@ Content-Type: application/json
 
 ###Buscando por Id
 GET http://localhost:5231/api/tarefas/1
+
+### Cadastrar Tarefa
+PUT http://localhost:5231/api/tarefas/2
+Content-Type: application/json
+
+{ 
+    "StatusId":"2",
+    "Titulo":"Aadaaaaaads",
+    "DataVencimento":"5552-05-05"
+}

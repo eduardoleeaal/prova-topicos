@@ -56,7 +56,27 @@ app.MapGet("/api/tarefas/{id}", ([FromRoute] int id, [FromServices] AppDataConte
 
 
 //4-ATUALIZAR TAREFA PUT
+app.MapPut("/api/tarefas/{id}", ([FromRoute] int id,
+                                [FromBody] Tarefa tarefa,
+                                [FromServices] AppDataContext ctx) =>
+{
+    Tarefa? entidade = ctx.Tarefas.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
 
+    if(tarefa.Id == null)
+    {
+        return Results.BadRequest("Tarefa inexistente");
+    }
+
+    entidade.Titulo =  tarefa.Titulo;
+    entidade.StatusId = tarefa.StatusId;
+    entidade.DataVencimento = tarefa.DataVencimento;
+
+    ctx.Tarefas.Update(entidade);
+    ctx.SaveChanges();
+    return Results.Ok(ctx.Tarefas.Include(t => t.Status).FirstOrDefault(t => t.Id == id));
+});
+
+//5-
 
 
 app.Run();
